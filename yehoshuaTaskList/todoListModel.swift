@@ -8,11 +8,21 @@
 
 import Foundation
 
-struct todoListModel {
+let sharedModel = todoListModel()
+
+class todoListModel {
     struct todoListItem {
         let itemName : String
         let itemDate : Date
     }
     
-    public var items : [todoListItem] = [todoListItem(itemName: "Test", itemDate: Date.distantFuture)]
+    public var items : [todoListItem] = [] {
+        didSet {
+            NotificationCenter.default.post(Notification(name: Notification.Name("itemsUpdated")))
+        }
+    }
+    
+    public func addItem(withName name : String?, date : Date) {
+        items.append(todoListItem(itemName: name ?? "Unnamed", itemDate: date))
+    }
 }

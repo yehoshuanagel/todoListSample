@@ -9,8 +9,15 @@
 import UIKit
 
 class TodoViewController: UITableViewController {
-    let list = todoListModel()
+    let list = sharedModel
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name("itemsUpdated"), object: nil, queue: nil) { (_) in
+            self.tableView.reloadData()
+        }
+    }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return list.items.count
     }
