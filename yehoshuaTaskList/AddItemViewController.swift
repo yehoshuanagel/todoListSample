@@ -9,12 +9,37 @@
 import Foundation
 import UIKit
 
-class AddItemViewController : UIViewController {
+class AddItemViewController : UIViewController, UITextFieldDelegate {
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
     
+    var taskName : String? {
+        get {
+            return (titleField.text == "") ? nil : titleField.text
+        }
+    }
     @IBAction func saveTapped(_ sender: UIButton) {
-        sharedModel.addItem(withName : titleField.text, date : datePicker.date)
+        if dateOverdue(datePicker.date) {
+            let overdueAlert = UIAlertController(title: "Date overdue", message: "Todo item '\(taskName ?? "Unnamed")' is overdue", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: { (_) in self.save() })
+            overdueAlert.addAction(okAction)
+            self.present(overdueAlert, animated: true)
+        } else {
+            save()
+        }
+    }
+    
+    func save() {
+        sharedModel.addItem(withName : taskName, date : datePicker.date)
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    func dateOverdue(_ date : Date) -> Bool {
+        return date < Date()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
