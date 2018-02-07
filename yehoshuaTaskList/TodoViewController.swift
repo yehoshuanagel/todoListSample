@@ -8,15 +8,13 @@
 
 import UIKit
 
-class TodoViewController: UITableViewController {
+class TodoViewController: UITableViewController, todoListDelegate {
     let list = sharedModel
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(forName: Notification.Name("itemsUpdated"), object: nil, queue: nil) { (_) in
-            self.tableView.reloadData()
-        }
+        list.delegate = self
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return list.items.count
@@ -32,6 +30,12 @@ class TodoViewController: UITableViewController {
         
         cell?.detailTextLabel?.textColor = (item.itemDate < Date()) ? #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         return cell ?? UITableViewCell()
+    }
+    
+    func itemAdded(item: todoListItem) {
+        tableView.beginUpdates()
+        tableView.insertRows(at: [IndexPath(row: tableView.numberOfRows(inSection: 0), section: 0)], with: .automatic)
+        tableView.endUpdates()
     }
 }
 
