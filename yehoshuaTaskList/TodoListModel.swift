@@ -1,5 +1,5 @@
 //
-//  todoListModel.swift
+//  TodoListModel.swift
 //  yehoshuaTaskList
 //
 //  Created by Yehoshua Nagel on 2/6/18.
@@ -8,24 +8,22 @@
 
 import Foundation
 
-struct todoListItem {
+struct TodoListItem {
     let itemName : String
     let itemDate : Date
 }
 
-let sharedModel = todoListModel()
-
-protocol todoListDelegate : class {
-    func itemAdded(item : todoListItem)
+protocol TodoListDelegate : class {
+    func itemAdded(item : TodoListItem)
 }
 
-class todoListModel {
-    weak var delegate : todoListDelegate?
+class TodoListModel {
+    weak var delegate : TodoListDelegate?
     
-    public var items : [todoListItem] = []
+    public var items : [TodoListItem] = []
     
     public func addItem(withName name : String?, date : Date) {
-        let newItem = todoListItem(itemName: name ?? "Unnamed", itemDate: date)
+        let newItem = TodoListItem(itemName: name ?? "Unnamed", itemDate: date)
         items.append(newItem)
         self.delegate?.itemAdded(item: newItem)
     }

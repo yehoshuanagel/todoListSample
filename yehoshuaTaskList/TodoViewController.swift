@@ -8,8 +8,8 @@
 
 import UIKit
 
-class TodoViewController: UITableViewController, todoListDelegate {
-    let list = sharedModel
+class TodoViewController: UITableViewController, TodoListDelegate {
+    let list = TodoListModel()
     let dateFormatter = DateFormatter()
     
     override func viewDidLoad() {
@@ -17,6 +17,14 @@ class TodoViewController: UITableViewController, todoListDelegate {
         
         list.delegate = self
         dateFormatter.dateFormat = "'Due 'MMM dd' at 'h:mm a"
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if let addItemViewController = segue.destination as? AddItemViewController {
+            addItemViewController.list = list
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -34,7 +42,7 @@ class TodoViewController: UITableViewController, todoListDelegate {
         return cell ?? UITableViewCell()
     }
     
-    func itemAdded(item: todoListItem) {
+    func itemAdded(item: TodoListItem) {
         tableView.beginUpdates()
         tableView.insertRows(at: [IndexPath(row: tableView.numberOfRows(inSection: 0), section: 0)], with: .automatic)
         tableView.endUpdates()

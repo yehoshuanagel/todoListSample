@@ -13,6 +13,8 @@ class AddItemViewController : UIViewController, UITextFieldDelegate {
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
     
+    var list : TodoListModel!
+    
     private var taskName : String? {
         get {
             return (titleField.text == "") ? nil : titleField.text
@@ -31,7 +33,7 @@ class AddItemViewController : UIViewController, UITextFieldDelegate {
     }
     
     private func save() {
-        sharedModel.addItem(withName : taskName, date : datePicker.date)
+        list.addItem(withName : taskName, date : datePicker.date)
         self.navigationController?.popViewController(animated: true)
     }
     
