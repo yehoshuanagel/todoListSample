@@ -37,15 +37,22 @@ class TodoViewController: UITableViewController, TodoListDelegate {
         
         cell?.textLabel?.text = item.itemName
         cell?.detailTextLabel?.text = dateFormatter.string(from: item.itemDate)
-        cell?.detailTextLabel?.textColor = (item.itemDate < Date()) ? #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        cell?.detailTextLabel?.textColor = item.itemDate.isInPast() ? #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         
         return cell ?? UITableViewCell()
     }
     
     func itemAdded(item: TodoListItem) {
+        let indexPath = IndexPath(row: tableView.numberOfRows(inSection: 0), section: 0)
         tableView.beginUpdates()
-        tableView.insertRows(at: [IndexPath(row: tableView.numberOfRows(inSection: 0), section: 0)], with: .automatic)
+        tableView.insertRows(at: [indexPath], with: .automatic)
         tableView.endUpdates()
+        let secondsToGo = item.itemDate.timeIntervalSinceNow
+        if !(item.itemDate.isInPast()) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + secondsToGo, execute: {
+                self.tableView.cellForRow(at: indexPath)?.detailTextLabel?.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+            })
+        }
     }
 }
 
